@@ -28,6 +28,14 @@ namespace Flags
 
         ComboBox CountryBox = new ComboBox();
 
+        Random random = new Random();
+
+        string answer = "";
+
+        int score;
+
+        int highscore;
+
 
 
         private void form_load(object sender, EventArgs e)
@@ -66,20 +74,74 @@ namespace Flags
             return country_png[i];
         }
 
-
-        private void flagBoxOne_Click(object sender, EventArgs e)
+        private void StartGame(object sender, EventArgs e)
         {
-            Image flag = Image.FromFile(@"..\..\country-flags-master\png250px\nl.png");
-            flagBoxOne.Image = flag;
-            flagBoxOne.Width = flag.Width;
-            flagBoxOne.Height = flag.Height;
+            FlagGame();
         }
 
-        private void Testclick(object sender, EventArgs e)
+        public void FlagGame()
         {
-            String code = "es";
-            DisplayFlag(code);
-            textBox1.Text = (country_name.Count).ToString();
+            List<string> answers = new List<string>();
+            for (int i = 0; i<3; i++)
+            {
+                answers.Add(country_name[RandomNumber(0,(country_name.Count-1))]);
+            }
+            
+            buttonA.Text = answers[0];
+            buttonB.Text = answers[1];
+            buttonC.Text = answers[2];
+
+            if (answers[0] == answers[1] || answers[1] == answers[2] || answers[2] == answers [0])
+            {
+                FlagGame();
+                return;
+            }
+
+
+
+            int x = RandomNumber(0,2);
+            answer = answers[x];
+            DisplayFlag(CountryToCode(answer));
+            CountryBox.Enabled = false;
+            
+
+
+        }
+
+        private void AnswerClick(object sender, EventArgs e)
+        {
+            Button bAnswer = (Button)sender;
+            string answerCheck = bAnswer.Text;
+            if (answerCheck == answer)
+            {
+                
+                score += 1;
+                scoreBox.Text = ("Score: " + score.ToString());
+                labelAnswer.Text = "Correct"; 
+                FlagGame();
+            }
+            else
+            {
+                
+                
+                if (highscore < score)
+                {
+                    HighscoreBox.Text = ("Highscore: " + score.ToString());
+                }
+                score = 0;
+                scoreBox.Text = "Score: ";
+                labelAnswer.Text = "Wrong";
+                CountryBox.Enabled = true;
+            }
+            
+            
+        }
+
+
+        public int RandomNumber(int min, int max)
+        {
+            
+            return random.Next(min, max);
         }
 
         
